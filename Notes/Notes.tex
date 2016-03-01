@@ -1,0 +1,560 @@
+\documentclass[titlepage, fleqn, a4paper, 12pt, twoside]{article}
+\usepackage{etex}
+\usepackage{geometry}
+\usepackage{exsheets} %question and solution environments
+\usepackage{amsmath, amssymb, amsthm} %standard AMS packages
+\usepackage[utf8]{inputenc}
+\usepackage{esint} %integral signs
+\usepackage{marginnote} %marginnotes
+\usepackage{gensymb} %miscellaneous symbols
+\usepackage{commath} %differential symbols
+\usepackage{xcolor} %colours
+\usepackage{cancel} %cancelling terms
+\usepackage[free-standing-units,space-before-unit]{siunitx} %formatting units
+	\sisetup
+	{
+		per-mode=fraction,
+		fraction-function=\frac
+	}
+\usepackage{tikz, pgfplots} %diagrams
+	\usetikzlibrary{calc, hobby, patterns, intersections, angles, quotes, spy}
+\usepackage{graphicx} %inserting graphics
+\usepackage{hyperref} %hyperlinks
+\usepackage{datetime} %date and time
+\usepackage{enumerate, enumitem} %numbered lists
+\usepackage{float} %inserting floats
+\usepackage[american voltages]{circuitikz} %circuit diagrams
+\usepackage{setspace} %double spacing
+\usepackage{microtype} %micro-typography
+\usepackage{listings} %formatting code
+	\lstset{language=Matlab}
+	\lstdefinestyle{standardMatlab}
+	{
+		belowcaptionskip=1\baselineskip,
+		breaklines=true,
+		frame=L,
+		xleftmargin=\parindent,
+		language=C,
+		showstringspaces=false,
+		basicstyle=\footnotesize\ttfamily,
+		keywordstyle=\bfseries\color{green!40!black},
+		commentstyle=\itshape\color{purple!40!black},
+		identifierstyle=\color{blue},
+		stringstyle=\color{orange},
+	}
+\usepackage{algpseudocode} %algorithms
+\usepackage{algorithm} %algorithms
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{todonotes}
+
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}} %adds numbers to specific equations in non-numbered list of equations
+
+\theoremstyle{definition}
+\newtheorem{example}{Example}
+\newtheorem{definition}{Definition}
+
+\theoremstyle{theorem}
+\newtheorem{theorem}{Theorem}
+\newtheorem{law}{Law}
+
+\makeatletter
+\@addtoreset{section}{part} %resets section numbers in new part
+\makeatother
+
+\newcommand\blfootnote[1]{%
+	\begingroup
+	\renewcommand\thefootnote{}\footnote{#1}%
+	\addtocounter{footnote}{-1}%
+	\endgroup
+}
+
+\renewcommand{\marginfont}{\scriptsize \color{blue}}
+
+\renewcommand{\tilde}{\widetilde}
+
+\SetupExSheets{solution/print = true} %prints all solutions by default
+
+%opening
+\title{Introduction to Signal Analysis}
+\author{Aakash Jog}
+\date{2015-16}
+
+\begin{document}
+
+\maketitle
+\pagenumbering{roman}
+\begin{titlepage}
+\newgeometry{margin=0cm}
+\maketitle
+\end{titlepage}
+\restoregeometry
+%\setlength{\mathindent}{0pt}
+
+\blfootnote
+{	
+	\begin{figure}[H]
+		\includegraphics[height = 12pt]{cc.pdf}
+		\includegraphics[height = 12pt]{by.pdf}
+		\includegraphics[height = 12pt]{nc.pdf}
+		\includegraphics[height = 12pt]{sa.pdf}
+	\end{figure}
+	This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License. To view a copy of this license, visit \url{http://creativecommons.org/licenses/by-nc-sa/4.0/}.
+} %CC-BY-NC-SA license
+
+\tableofcontents
+
+\clearpage
+\pagenumbering{roman}
+
+\section{Lecturer Information}
+
+\textbf{Yaniv Isbi}\\
+~\\
+E-mail: \href{mailto:isbi@eng.tau.ac.il}{isbi@eng.tau.ac.il}\\
+Mobile: \href{tel:+972522850915}{+972 52 285 0915}
+
+\section{Instructor Information}
+
+\textbf{Tom Mahler}\\
+~\\
+E-mail: \href{tommahle@mail.tau.ac.il}{tommahle@mail.tau.ac.il}
+
+\section{Required Reading}
+
+\begin{enumerate}
+	\item Alan V. Oppenheim, Alan S. Willsky, S. Hamid Nawab, Signals \& Systems, Prentice Hall, 2nd edition, 1997
+	\item Alan V. Oppenheim, Ronald W. Schafer, John R. Buck, Discrete-Time Signal Processing, Prentice Hall, 2nd edition, 1999
+\end{enumerate}
+
+\clearpage
+\pagenumbering{arabic}
+
+\part{Fourier Series}
+
+\section{Periodic Signals}
+
+\begin{definition}[Continuous time signal]
+	A signal $x(t)$, where $t \in \mathbb{R}$ is a continuous variable, is called a continuous time signal.
+\end{definition}
+
+\begin{definition}[Discrete time signal]
+	A signal $x[n]$, where $n \in \mathbb{N}$ is a discrete variable, is called a discrete time signal.
+\end{definition}
+
+\begin{definition}[Periodic continuous time signal]
+	A signal $x(t)$ is said to be periodic if $\forall t$, $\exists T$, such that
+	\begin{align*}
+		x(t) & = x(t + T)
+	\end{align*}
+	The smallest such $T$ is called the fundamental period.
+	It is denoted as $T_0$.
+\end{definition}
+
+\begin{definition}[Periodic discrete time signal]
+	A signal $x[n]$ is said to be periodic if $\forall n$, $\exists N \in \mathbb{N}$, such that
+	\begin{align*}
+		x[n] & = x[n + N]
+	\end{align*}
+	The smallest such $N \in \mathbb{N}$ is called the fundamental period.
+	It is denoted as $N_0$.
+\end{definition}
+
+\begin{question}
+	Is
+	\begin{align*}
+		x(t) & = \cos t
+	\end{align*}
+	periodic?
+\end{question}
+
+\begin{solution}
+	\begin{align*}
+		\cos(t) & = \cos(t + 2 \pi)
+	\end{align*}
+	Therefore, the function is periodic, with fundamental period $2 \pi$.
+\end{solution}
+
+\begin{question}
+	Is
+	\begin{align*}
+		x[n] & = e^{j \omega_0 n}
+	\end{align*}
+	periodic?
+\end{question}
+
+\begin{solution}
+	\begin{align*}
+		x[n]                & = e^{j \omega_0 n} \\
+		\therefore x[n + N] & = e^{j \omega_0 (n + N)}
+	\end{align*}
+	Therefore,
+	\begin{align*}
+		x[n]                        & = x[n + N]                          \\
+		\iff e^{j \omega_0 n}       & = e^{j \omega_0 (n + N)}            \\
+		\iff e^{j \omega_0 n}       & = e^{j \omega_0 n} e^{j \omega_0 N} \\
+		\iff e^{j \omega_0 N}       & = 1                                 \\
+		\iff \omega_0 N             & = 2 \pi m                           \\
+		\iff \frac{\omega_0}{2 \pi} & = \frac{m}{N}
+	\end{align*}
+	Therefore, as both $m$ and $N$ are natural numbers, $\frac{m}{N} \in \mathbb{Q}$.
+	Therefore, the function is periodic if and only if $\frac{\omega_0}{2 \pi}$ is a rational number.
+\end{solution}
+
+\section{Set of Harmonically Related Functions}
+
+\begin{definition}[Fundamental frequency]
+	The frequency which corresponds to the fundamental period of a signal is called the fundamental frequency.
+\end{definition}
+
+\begin{definition}[Harmonically related functions]
+	The set of all functions $\varphi_k(t)$, each with fundamental frequency
+	\begin{align*}
+		\Omega_k & = k \Omega_0
+	\end{align*}
+	is called a set of harmonically related functions.\\
+	Each $\Omega_k$ is called the $k$th harmonic.
+\end{definition}
+
+\begin{theorem}
+	The fundamental periods of harmonically related functions are given by
+	\begin{align*}
+		\tilde{T} & = \frac{T_0}{k}
+	\end{align*}
+	where $T_0$ is the fundamental period corresponding to the fundamental period $\Omega_0$.
+\end{theorem}
+
+\begin{proof}
+	Let
+	\begin{align*}
+		x(t) & = e^{j \Omega t}
+	\end{align*}
+	Therefore,
+	\begin{align*}
+		T_0 & = \frac{2 \pi}{\Omega_0}
+	\end{align*}
+	is the fundamental period of $x(t)$.\\
+	Therefore,
+	\begin{align*}
+		\Omega_0 & = \frac{2 \pi}{T_0}
+	\end{align*}
+	is the fundamental frequency of $x(t)$.\\
+	Therefore,
+	\begin{align*}
+		\Omega_k & = k \Omega_0 \\
+                         & = k \frac{2 \pi}{T_0}
+	\end{align*}
+	where $k \in \mathbb{Z}$.\\
+	Let
+	\begin{align*}
+		\varphi_k(t) & = e^{j \Omega_k t} \\
+                             & = e^{j k \Omega_0 t}
+	\end{align*}
+	Therefore,
+	\begin{align*}
+		\varphi_j(t + \tilde{T})        & = e^{j k \Omega_0 (t + \tilde{T})} \\
+		\iff e^{j k \Omega_0 \tilde{T}} & = 1                                \\
+		\iff \tilde{T}                  & = \frac{T_0}{k}
+	\end{align*}
+\end{proof}
+
+\subsection{Number of Harmonics in Discrete Time Systems}
+
+Let
+\begin{align*}
+	x[n] & = e^{j \omega n}
+\end{align*}
+Let the fundamental period be $N$.\\
+Therefore, the fundamental frequency is
+\begin{align*}
+	\omega_0 & = \frac{2 \pi}{N}
+\end{align*}
+where $N \in \mathbb{N}$ is the fundamental period of $x[n]$.\\
+Therefore,
+\begin{align*}
+	\varphi_0[n] & = e^{j \omega_0 n} \\
+                     & = e^{j \frac{2 \pi}{N} n}
+\end{align*}
+Therefore,
+\begin{align*}
+	\varphi_k[n] & = e^{j k \omega_0 n}
+\end{align*}
+Therefore,
+\begin{align*}
+	\varphi_{k + N}[n] & = e^{j (k + N) \omega_0 n}                     \\
+                           & = e^{j k \omega_0 n} e^{j N \omega_0 n}        \\
+                           & = e^{j k \omega_0 n} e^{j N \frac{2 \pi}{N} n} \\
+                           & = e^{j k \omega_0 n}                           \\
+                           & = \varphi_k[n]
+\end{align*}
+Therefore, every $N$th frequency $\omega_k$ is equal.
+Therefore, there are exactly $N$ distinct frequencies, and hence $N$ corresponding distinct harmonics.
+
+\clearpage
+\part{Systems}
+
+\section{Properties of Systems}
+
+\subsection{Memory}
+
+\begin{definition}[Memoryless systems]
+	A system is said to be memoryless if and only if the output at $t$, or at $n$, is dependent only on the input of at the same $t$, or $n$.
+\end{definition}
+
+\begin{definition}[Accumulator]
+	A system such that
+	\begin{align*}
+		y[n] & = \sum\limits_{m = -\infty}^{n} x[m]
+	\end{align*}
+	where $y[n]$ is the output, and $x[n]$ is the input, is called an accumulator.
+\end{definition}
+
+\begin{theorem}
+	Every system with memory can be formulated in terms of feedback systems.
+\end{theorem}
+
+\begin{question}
+	Formulate a accumulator such that
+	\begin{align*}
+		y[n] & = \sum\limits_{m = -\infty}^{n} x[m]
+	\end{align*}
+	in terms of feedback systems.
+\end{question}
+
+\begin{solution}
+	\begin{align*}
+		y[n] & = \sum\limits_{m = -\infty}^{n} x[m]            \\
+                     & = x[n] + \sum\limits_{m = -\infty}^{n - 1} x[m] \\
+                     & = x[n] + y[n - 1]
+	\end{align*}
+\end{solution}
+
+\subsection{Invertibility}
+
+\begin{definition}[Invertible system]
+	A system with input $x$ and output $y$ is said to be invertible if and only if there exists a system with input $y$ and output $x$.
+\end{definition}
+
+\subsection{Causality}
+
+\begin{definition}[Causal system]
+	A system with input $x(t)$ and output $y(t)$ is said to be causal if and only if $y(t)$ is independent of $x(\tau)$, for $\tau > t$.
+\end{definition}
+
+\begin{question}
+	Is the system
+	\begin{align*}
+		y[n] & = \frac{1}{2 m + 1} \sum\limits_{k = -m}^{m} x[n + k]
+	\end{align*}
+	causal?
+\end{question}
+
+\begin{solution}
+	As $y[n]$ is dependent on $x[n + k]$, with $k > 0$, the system is non-causal.
+\end{solution}
+
+\subsection{BIBO Stability}
+
+\begin{definition}[BIBO stable system]
+	A system is said to be BIBO stable, if and only if the output for a bounded input is bounded.
+\end{definition}
+
+\begin{question}
+	Let
+	\begin{align*}
+		y[n] & = \sum\limits_{k = -\infty}^{n} x[k]
+	\end{align*}
+	Let
+	\begin{align*}
+		x[n] &= u[n]\\
+		&=
+			\begin{cases}
+				0 & ;\quad n < 0   \\
+				1 & ;\quad 0 \le n \\
+			\end{cases}
+	\end{align*}
+	Show that the system is BIBO unstable.
+\end{question}
+
+\begin{solution}
+	For all $n$,
+	\begin{align*}
+		\left| x[n] \right| & \le 1
+	\end{align*}
+	Therefore, the input is bounded.\\
+	However,
+	\begin{align*}
+		\lim\limits_{n \to \infty} y[n] & = \lim\limits_{n \to \infty} \sum\limits_{k = -\infty}^{n} x[k]
+	\end{align*}
+	Therefore, the limit is infinite.
+	Hence, the system is BIBO unstable.
+\end{solution}
+
+\subsection{Time Independence}
+
+\begin{definition}[Time independent/invariant system]
+	A system is said to be time independent if and only if the response to a time-shifted input is the response to the input, shifted by the same amount, i.e., if
+	\begin{align*}
+		y[n] & = H\left\{ x[n] \right\}
+	\end{align*}
+	then,
+	\begin{align*}
+		y[n - n_0] & = H\left\{ x[n - n_0] \right\}
+	\end{align*}
+	Similarly, if
+	\begin{align*}
+		y(t) & = H\left\{ x(t) \right\}
+	\end{align*}
+	then,
+	\begin{align*}
+		y(t - t_0) & = H\left\{ x(t - t_0) \right\}
+	\end{align*}
+\end{definition}
+
+\begin{question}
+	Is the system
+	\begin{align*}
+		y[n] & = x[n] - x[n - 1]
+	\end{align*}
+	time invariant?
+\end{question}
+
+\begin{solution}
+	Let
+	\begin{align*}
+		\tilde{x}[n] & = x[n - n_0]]
+	\end{align*}
+	Therefore,
+	\begin{align*}
+		H\left\{ \tilde{x}[n] \right\} & = \tilde{x}[n] - \tilde{x}[n - 1] \\
+                                               & = x[n - n_0] - x[n - n_0 - 1]     \\
+                                               & = y[n - n_0]
+	\end{align*}
+	Therefore, the system is time invariant.
+\end{solution}
+
+\begin{question}
+	Is the system
+	\begin{align*}
+		y(t) & = \sin(t) x(t)
+	\end{align*}
+	time invariant?
+\end{question}
+
+\begin{solution}
+	Let
+	\begin{align*}
+		\tilde{x}(t) & = x(t - t_0)
+	\end{align*}
+	Therefore,
+	\begin{align*}
+		H\left\{ \tilde{x}(t) \right\} & = \sin(t) \tilde{x}(t) \\
+                                               & = \sin t x(t - t_0)    \\
+                                               & \neq \sin(t - t_0) x(t - t_0)
+	\end{align*}
+	Therefore,
+	\begin{align*}
+		H\left\{ x(t - t_0) \right\} & \neq y(t - t_0)
+	\end{align*}
+	Therefore, the function is time dependent.
+\end{solution}
+
+\subsection{Linearity}
+
+\begin{definition}
+	Let
+	\begin{align*}
+		y_1(t) & = H\left\{ x_1(t) \right\} \\
+		y_2(t) & = H\left\{ x_2(t) \right\}
+	\end{align*}
+	Then, the system is said to be linear, if and only if
+	\begin{align*}
+		H\left\{ a_1 x_1 + a_2 x_2 \right\} & = a_1 y_1 + a_2 y_2 \\
+		H\{0\}                              & = 0
+	\end{align*}
+\end{definition}
+
+\section{LTI Systems}
+
+\begin{definition}[Kronecker delta function]
+	\begin{align*}
+		\delta[n - n_0] &=
+			\begin{cases}
+				1 & ;\quad n = n_0    \\
+				0 & ;\quad n \neq n_0 \\
+			\end{cases}
+	\end{align*}
+	is called the Kronecker delta function.
+\end{definition}
+
+\begin{theorem}
+	\begin{align*}
+		x[n] \delta[n - n_0] & = x[n_0]
+	\end{align*}
+\end{theorem}
+
+\begin{theorem}
+	\begin{align*}
+		x[n] & = \sum\limits_{k = -\infty}^{\infty} x[k] \delta[n - k]
+	\end{align*}
+\end{theorem}
+
+\begin{definition}[Impulse response]
+	The response of a system to an input $\delta[n - k]$ is called the impulse response of the system.
+	It is denoted as $h_k[n]$.
+\end{definition}
+
+\begin{definition}[Discrete time convolution]
+	\begin{align*}
+		x[n] \ast h[n] & = \sum\limits_{k = -\infty}^{\infty} x[k] h[n - k] \\
+                               & = \sum\limits_{k = -\infty}^{\infty} x[n - k] h[k]
+	\end{align*}
+\end{definition}
+
+\begin{definition}[Continuous time convolution]
+	\begin{align*}
+		x(t) \ast h(t) & = \int\limits_{-\infty}^{\infty} x(\tau) h(t - \tau) \dif \tau \\
+                               & = \int\limits_{-\infty}^{\infty} x(t - \tau) h(\tau) \dif \tau
+	\end{align*}
+\end{definition}
+
+\begin{theorem}
+	Consider a linear time invariant system such that
+	\begin{align*}
+		y[n] & = H\left\{ x[n] \right\}
+	\end{align*}
+	Then,
+	\begin{align*}
+		y[n] & = x[n] \ast h[n]
+	\end{align*}
+\end{theorem}
+
+\begin{proof}
+	\begin{align*}
+		y[n] & = H\left\{ x[n] \right\} \\
+                     & = H\left\{ \sum\limits_{k = -\infty}^{\infty} x[k] \delta[n - k] \right\}
+	\end{align*}
+	Therefore, as the system is linear,
+	\begin{align*}
+		y[n] & = \sum\limits_{k = -\infty}^{\infty} x[k] H\left\{ \delta[n - k] \right\} \\
+                     & = \sum\limits_{k = -\infty}^{ \infty} x[k] h_k[n]
+	\end{align*}
+	Therefore, as the system is time invariant,
+	\begin{align*}
+		y[n] & = \sum\limits_{k = -\infty}^{\infty} x[k] h[n - k] \\
+                     & = x[n] \ast h[n]
+	\end{align*}
+\end{proof}
+
+\begin{theorem}
+	Consider a linear time invariant system such that
+	\begin{align*}
+		y(t) & = H\left\{ x(t) \right\}
+	\end{align*}
+	Then,
+	\begin{align*}
+		y(t) & = x(t) \ast h(t)
+	\end{align*}
+\end{theorem}
+
+\end{document}

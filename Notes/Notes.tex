@@ -130,7 +130,7 @@ E-mail: \href{tommahle@mail.tau.ac.il}{tommahle@mail.tau.ac.il}
 \clearpage
 \pagenumbering{arabic}
 
-\part{Fourier Series}
+\part{Basics of Signals and Systems}
 
 \section{Periodic Signals}
 
@@ -289,9 +289,6 @@ Therefore,
 \end{align*}
 Therefore, every $N$th frequency $\omega_k$ is equal.
 Therefore, there are exactly $N$ distinct frequencies, and hence $N$ corresponding distinct harmonics.
-
-\clearpage
-\part{Systems}
 
 \section{Properties of Systems}
 
@@ -554,6 +551,348 @@ Therefore, there are exactly $N$ distinct frequencies, and hence $N$ correspondi
 	Then,
 	\begin{align*}
 		y(t) & = x(t) \ast h(t)
+	\end{align*}
+\end{theorem}
+
+\section{Transfer Functions}
+
+\begin{definition}[Eigenvalues and eigenfunctions]
+	A signal is said to be an eigenfunction of a system, if the output of the system for the signal is equal to the signal multiplied by a constant.
+	The constant is called the eigenvalue corresponding to the eigenfunction.
+\end{definition}
+
+\subsection{Continuous Time Systems}
+
+Let the impulse response of a system be $h(t)$.
+Therefore, the response of the system for an input $e^{j \Omega t}$ is
+\begin{align*}
+	y(t) &= x(t) \ast h(t)\\
+	&= \int\limits_{-\infty}^{\infty} h(\tau) x(t - \tau) \dif \tau\\
+	&= \int\limits_{-\infty}^{\infty} h(\tau) e^{j \Omega (t - \tau)} \dif \tau\\
+	&= \int\limits_{-\infty}^{\infty} h(\tau) e^{j \Omega t} e^{-j \Omega \tau} \dif \tau\\
+	&= e^{j \Omega t} \int\limits_{-\infty}^{\infty} h(\tau) e^{-j \Omega \tau} \dif \tau
+\end{align*}
+Let
+\begin{align*}
+	H(s) &= \int\limits_{-\infty}^{\infty} h(\tau) e^{-s \tau} \dif \tau
+\end{align*}
+Therefore,
+\begin{align*}
+	y(t) &= H(j \Omega) e^{j \Omega t}
+\end{align*}
+$H$ is written as $H(j \Omega)$, to indicate that it is the transfer function $H(s)$, where $s = \sigma + j \Omega$, on the imaginary axis.
+
+\subsection{Discrete Time Systems}
+
+Let the impulse response of a system be $h[n]$.
+Therefore, the response of the system for an input $e^{j \omega t}$ is
+\begin{align*}
+	y[n] &= x[n] \ast h[n]\\
+	&= \sum\limits_{k = -\infty}^{\infty} h[k] x[n - k]\\
+	&= \sum\limits_{k = -\infty}^{\infty} h[k] e^{j \omega (n - k)}\\
+	&= \sum\limits_{k = -\infty}^{\infty} h[k] e^{j \omega k} e^{j \omega n}
+\end{align*}
+Let
+\begin{align*}
+	H\left( e^{j \omega} \right) &= \sum\limits_{k = -\infty}^{\infty} h[k] e^{-j \omega k}
+\end{align*}
+Therefore,
+\begin{align*}
+	y[n] &= H\left( e^{j \omega} \right) e^{j \omega n}
+\end{align*}
+$H$ is written as $H\left( e^{j \omega} \right)$, to indicate that it is the transfer function $H(z)$, where $z = \rho e^{j \omega}$, on the unit circle.
+
+\section{Conjugate Symmetry for Real Impulse Response}
+
+\begin{theorem}
+	For a real valued $h(t)$,
+	\begin{align*}
+		H^*(j \Omega) &= H(-j \Omega)
+	\end{align*}
+\end{theorem}
+
+\begin{proof}
+	\begin{align*}
+		H(j \Omega) &= \int\limits_{-\infty}^{\infty} h(t) e^{-j \Omega t} \dif t\\
+		\therefore H^*(j \Omega) &= \int\limits_{-\infty}^{\infty} h(t) e^{j \Omega t} \dif t\\
+		&= H(-j \Omega)
+	\end{align*}
+\end{proof}
+
+\begin{theorem}
+	For a real valued $h(t)$,
+	\begin{align*}
+		\Re\left\{ H(j \Omega) \right\} &= \Re\left\{ H(-j \Omega) \right\}\\
+		\Im\left\{ H(j \Omega) \right\} &= -\Im\left\{ H(-j \Omega) \right\}
+	\end{align*}
+\end{theorem}
+
+\begin{theorem}
+	For a real valued $h(t)$,
+	\begin{align*}
+		\left| H(j \Omega) \right| &= \left| H(-j \Omega) \right|\\
+		\angle H(j \Omega) &= -\angle H(-j \Omega)
+	\end{align*}
+\end{theorem}
+
+\section{Response of a System with Real Valued Impulse Response to a Real Valued Harmonic Function}
+
+Let
+\begin{align*}
+	x(t) &= a \cos(\Omega t)\\
+	&= \frac{a}{2} e^{j \Omega t} + \frac{a}{2} e^{-j \Omega t}
+\end{align*}
+As the impulse response is real,
+\begin{align*}
+	h(t) &= h^*(t)
+\end{align*}
+Therefore,
+\begin{align*}
+	y(t) &= \frac{a}{2} H(j \Omega) e^{j \Omega t} + \frac{a}{2} H(-j \Omega) e^{-j \Omega t}\\
+	&= \frac{a}{2} H(j \Omega) e^{j \Omega t} + \frac{a}{2} H^*(j \Omega) e^{-j \Omega t}
+\end{align*}
+Let
+\begin{align*}
+	z &= H(j \Omega) e^{j \Omega t}\\
+	\therefore z^* &= H^*(j \Omega) e^{-j \Omega t}\\
+\end{align*}
+Therefore,
+\begin{align*}
+	y(t) &= \frac{a}{2} z + \frac{a}{2} z^*\\
+	&= a \Re\{z\}\\
+	&= a \Re\left\{ H(j \Omega) e^{j \Omega t} \right\}\\
+	&= a \Re\left\{ \left| H(j \Omega) \right| e^{j \angle H(j \Omega)} e^{j \Omega t} \right\}\\
+	&= a \left| H(j \Omega) \right| \Re\left\{ e^{j \left( \Omega t + \angle H(j \Omega) \right)} \right\}\\
+	&= a \left| H(j \Omega) \right| \cos\left( \Omega t + \angle H(j \Omega) \right)
+\end{align*}
+
+\section{Power and Energy}
+
+\begin{definition}[Power and energy for continuous time systems]
+	The power and energy for a finite interval are defined as
+	\begin{align*}
+		E_x &= \int\limits_{t_1}^{t_2} \left| x(t) \right|^2 \dif t\\
+		\langle P \rangle &= \frac{1}{t_2 - t_1} \int\limits_{t_1}^{t_2} \left| x(t) \right|^2 \dif t
+	\end{align*}
+	The power and energy for an infinite interval are defined as
+	\begin{align*}
+		E_{\infty} &= \lim\limits_{T \to \infty} \int\limits_{-T}^{T} \left| x(t) \right|^2 \dif t\\
+		\langle P \rangle &= \lim\limits_{T \to \infty} \frac{1}{2 T} \int\limits_{-T}^{T} \left| x(t) \right|^2 \dif t
+	\end{align*}
+\end{definition}
+
+\begin{definition}[Power and energy for discrete time systems]
+	The power and energy for a finite interval are defined as
+	\begin{align*}
+		E_x &= \sum\limits_{n = n_1}^{n^2} \left| x[n] \right|^2\\
+		\langle P \rangle &= \frac{1}{n_2 - n_1} \sum\limits_{n = n_1}^{n_2} \left| x[n] \right|^2
+	\end{align*}
+	The power and energy for an infinite interval are defined as
+	\begin{align*}
+		E_{\infty} &= \lim\limits_{T \to \infty} \sum\limits_{n = -N}^{N} \left| x[n] \right|^2\\
+		\langle P \rangle &= \lim\limits_{T \to \infty} \frac{1}{2 N + 1} \left| x[n] \right|^2
+	\end{align*}
+\end{definition}
+
+\begin{definition}[Energy signal]
+	A signal $x$ is said to be a energy signal if $E_{\infty}$ is finite.
+\end{definition}
+
+\begin{definition}[Power signal]
+	A signal $x$ is said to be a power signal if $P_{\infty}$ is finite and positive.
+\end{definition}
+
+\section{Synthesis and Analysis}
+
+\subsection{Discrete Time Systems}
+
+Let
+\begin{align*}
+	\varphi_k[n] &= e^{j k \frac{2 \pi}{N} n}
+\end{align*}
+where $k = 0,\dots,N - 1$.\\
+Therefore,
+\begin{align*}
+	\left\langle \varphi_k[n],\varphi_m[n] \right\rangle &= \sum\limits_{n = \langle N \rangle} \varphi_k[n] {\varphi_m}^*[n]\\
+	&= \sum\limits_{n = \langle N \rangle} e^{j k \frac{2 \pi}{N} n} e^{-j m \frac{2 \pi}{N} n}\\
+	&= \sum\limits_{n = \langle N \rangle} e^{j (k - m) \frac{2 \pi}{N} n}
+\end{align*}
+If $k = m + l N$, where $l \in \mathbb{Z}$,
+\begin{align*}
+	\left\langle \varphi_k[n],\varphi_m[n] \right\rangle &= \sum\limits_{n = \langle N \rangle} 1\\
+	&= N
+\end{align*}
+If $k \neq m + l N$, where $l \in \mathbb{Z}$, let
+\begin{align*}
+	W_n &= e^{j \frac{2 \pi}{N}}
+\end{align*}
+Therefore,
+\begin{align*}
+	\left\langle \varphi_k[n],\varphi_m[n] \right\rangle &= \sum\limits_{n = \langle N \rangle} {W_N}^{(k - m) n}
+\end{align*}
+Let
+\begin{align*}
+	p &= k - m
+\end{align*}
+Therefore, $p \in \mathbb{Z} \setminus \{0,\pm N,\pm 2 N,\dots\}$.
+Therefore,
+\begin{align*}
+	\left\langle \varphi_k[n],\varphi_m[n] \right\rangle &= \sum\limits_{n = \langle N \rangle} {W_N}^{p n}\\
+	&= \sum\limits_{n = 0}^{N - 1} {W_N}^{p n}\\
+	&= \frac{1 - {W_N}^{p N}}{1 - {W_N}^p}\\
+	&= \frac{1 - e^{j \frac{2 \pi}{N} p N}}{1 - e^{j \frac{2 \pi}{N} p}}\\
+	&= 0
+\end{align*}
+Therefore,
+\begin{align*}
+	\left\langle \varphi_k[n],\varphi_m[n] \right\rangle &=
+		\begin{cases}
+			N &;\quad k = m + l N, l \in \mathbb{Z}\\
+			0 &;\quad \text{otherwise}\\
+		\end{cases}\\
+		&= N \delta[k - m - l N]
+\end{align*}
+Let
+\begin{align*}
+	x[n] &= \sum\limits_{k = \langle N \rangle} a_k \varphi_k[n]
+\end{align*}
+Therefore,
+\begin{align*}
+	\left\langle x[n],\varphi_k[n] \right\rangle &= \left\langle \sum\limits_{m = \langle N \rangle} a_m \varphi_m[n] , \varphi_k[n] \right\rangle\\
+	&= \sum\limits_{m = \langle N \rangle} \left\langle \varphi_m[n],\varphi_k[n] \right\rangle\\
+	&= \sum\limits_{m = \langle N \rangle} a_m N \delta[m - k]\\
+	&= N a_k
+\end{align*}
+Therefore,
+\begin{align*}
+	a_k &= \frac{1}{N} \left\langle x[n],\varphi_k[n] \right\rangle\\
+	&= \frac{1}{N} \sum\limits_{n = \langle N \rangle} x[n] {\varphi_k}^*[n]\\
+	&= \frac{1}{N} \sum\limits_{n = \langle N \rangle} x[n] e^{-j k \frac{2 \pi}{N} n}
+\end{align*}
+Therefore,
+\begin{align*}
+	x[n] &= \sum\limits_{k = \langle N \rangle} a_k e^{j k \frac{2 \pi}{N} n}
+\end{align*}
+
+\begin{theorem}[Analysis formula for discrete time systems]
+	\begin{align*}
+		a_k &= \frac{1}{N} \sum\limits_{n = \langle N \rangle} x[n] e^{-j k \frac{2 \pi}{N} n}\\
+	\end{align*}
+\end{theorem}
+
+\begin{theorem}[Synthesis formula for discrete time systems]
+	\begin{align*}
+		x[n] &= \sum\limits_{k = \langle N \rangle} a_k e^{j k \frac{2 \pi}{N} n}
+	\end{align*}
+\end{theorem}
+
+\begin{question}
+	Find the coefficients $a_k$ for
+	\begin{align*}
+		x[n] &= \sin(\omega_0 n)
+	\end{align*}
+\end{question}
+
+\begin{solution}
+	\begin{align*}
+		\frac{\omega_0}{2 \pi} &= \frac{m}{N}
+	\end{align*}
+	Therefore, the function is
+	\begin{align*}
+		x[n] &= \sin(\omega_0 n)\\
+		&= \frac{1}{2 j} e^{j \frac{2 \pi}{N} n} - \frac{1}{2 j} e^{-j \frac{2 \pi}{N} n}
+	\end{align*}
+	Let
+	\begin{align*}
+		\omega_0 &= \frac{2 \pi}{N}
+	\end{align*}
+	Therefore, the coefficients are
+	\begin{align*}
+		a_1 &= \frac{1}{2 j}\\
+		a_{N - 1} &= a_{-1}\\
+		&= -\frac{1}{2 j}
+	\end{align*}
+	All other coefficients are zero.
+\end{solution}
+
+\begin{question}
+	Find the coefficients $a_k$ for
+	\begin{align*}
+		x[n] &= \sin\left( \frac{6 \pi}{8} n \right)
+	\end{align*}
+\end{question}
+
+\begin{solution}
+	\begin{align*}
+		\frac{6 \pi}{8} &= 3 \cdot \frac{2 \pi}{8}
+	\end{align*}
+	Let
+	\begin{align*}
+		\omega_0 &= \frac{2 \pi}{8}
+	\end{align*}
+	Therefore,
+	\begin{align*}
+		x[n] &= \sin\left( \frac{6 \pi}{8} n \right)\\
+		&= \frac{1}{2 j} e^{j \frac{6 \pi}{8} n} - \frac{1}{2 j} e^{-j \frac{6 \pi}{8} n}
+	\end{align*}
+	Therefore, the coefficients are
+	\begin{align*}
+		a_3 &= \frac{1}{2 j}\\
+		a_5 &= a_{-3}\\
+		&= -\frac{1}{2 j}
+	\end{align*}
+\end{solution}
+
+\subsection{Continuous Time Systems}
+
+\begin{align*}
+	x(t) &= x(t + T)\\
+	\Omega_0 &= \frac{2 \pi}{T}
+\end{align*}
+Let
+\begin{align*}
+	\varphi_k(t) &= e^{j k \Omega_0 t}
+\end{align*}
+where $k \in \mathbb{Z}$.\\
+Therefore,
+\begin{align*}
+	\left\langle \varphi_k(t),\varphi_m(t) \right\rangle &= \int\limits_{T} \varphi_k(t) {\varphi_m}^*(t) \dif t\\
+	&= \int\limits_{T} \left( e^{j k \Omega_0 t} e^{-j m \Omega_0 t} \right) \dif t\\
+	&= \int\limits_{T} e^{j (k - m) \Omega_0 t} \dif t\\
+	&=
+		\begin{cases}
+			T &;\quad k = m\\
+			0 &;\quad k \neq m\\
+		\end{cases}\\
+	&= T \delta[k - m]
+\end{align*}
+Therefore,
+\begin{align*}
+	x(t) &= \sum\limits_{k = -\infty}^{\infty} a_k \varphi_k(t)\\
+	&= \sum\limits_{k = -\infty}^{\infty} a_k e^{j k \Omega_0 t}
+\end{align*}
+Therefore,
+\begin{align*}
+	\left\langle x(t),\varphi_k(t) \right\rangle &= \left\langle \sum\limits_{m = -\infty}^{\infty} a_m \varphi_m(t) , \varphi_k(t) \right\rangle\\
+	&= \sum\limits_{m = -\infty}^{\infty} a_m \left\langle \varphi_m(t),\varphi_k(t) \right\rangle\\
+	&= \sum\limits_{m = -\infty}^{\infty} a_m T \delta[k - m]\\
+	&= T a_k
+\end{align*}
+Therefore,
+\begin{align*}
+	a_k &= \frac{1}{T} \left\langle x(t),\varphi_k(t) \right\rangle\\
+	&= \frac{1}{T} \int\limits_{T} x(t) e^{-j k \Omega_0 t} \dif t\\
+\end{align*}
+
+\begin{theorem}[Analysis formula for continuous time systems]
+	\begin{align*}
+		a_k &= \frac{1}{T} \int\limits_{T} x(t) e^{-j k \Omega_0 t}
+	\end{align*}
+\end{theorem}
+
+\begin{theorem}[Synthesis formula for continuous time systems]
+	\begin{align*}
+		x(t) &= \sum\limits_{k = -\infty}^{\infty} a_k e^{j k \Omega_0 t}
 	\end{align*}
 \end{theorem}
 

@@ -47,6 +47,7 @@
 \usepackage{booktabs}
 \usepackage{multirow}
 \usepackage{todonotes}
+\usepackage{extarrows}
 
 \newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}} %adds numbers to specific equations in non-numbered list of equations
 
@@ -68,6 +69,11 @@
 	\addtocounter{footnote}{-1}%
 	\endgroup
 }
+
+\DeclareMathOperator{\sinc}{sinc}
+
+\newcommand{\FS}{\xleftrightarrow{\mathrm{FS}}}
+\newcommand{\DFS}{\xleftrightarrow{\mathrm{DFS}}}
 
 \renewcommand{\marginfont}{\scriptsize \color{blue}}
 
@@ -471,6 +477,65 @@ Therefore, there are exactly $N$ distinct frequencies, and hence $N$ correspondi
 	\end{align*}
 \end{definition}
 
+\begin{question}
+	Consider a system
+	\begin{align*}
+		y(t) &= T\left\{ x(t) \right\}\\
+		&= \int\limits_{-\infty}^{t} x(\tau) \dif \tau
+	\end{align*}
+	Check for the following properties of the system.
+	\begin{enumerate}
+		\item Linearity
+		\item Time invariance
+		\item Causality
+		\item Memory
+		\item BIBO Stability
+		\item Invertibility
+	\end{enumerate}<++>
+\end{question}<++>
+
+\begin{solution}
+	\begin{enumerate}[leftmargin=*]
+		\item
+			\begin{align*}
+				T\left\{ a x_1(t) + b x_2(t) \right\} &= \int\limits_{-\infty}^{t} \left( a x_1(\tau) + b x_2(\tau) \right) \dif \tau\\
+				&= a \int\limits_{-\infty}^{t} x_1(\tau) \dif \tau + b \int\limits_{-\infty}^{t} x_2(\tau) \dif \tau\\
+				&= a T\left\{ x_1(t) \right\} + b T\left\{ x_2(t) \right\}
+			\end{align*}
+			Therefore, the system is linear.
+		\item
+			\begin{align*}
+				T\left\{ x(t - T) \right\} &= \int\limits_{-\infty}^{t - T} x(\tau) \dif \tau\\
+				&= \int\limits_{-\infty}^{t} x(\tau - T) \dif \tau\\
+				&= y(t - T)
+			\end{align*}
+			Therefore, the system is time invariant.
+		\item
+			As $y(t)$ is dependent on the time from $-\infty$ to $t$, the system is causal.
+		\item
+			As $T$ is an integral from $-\infty$ to $t$, $y(t)$ depends on the historical inputs.
+			Therefore, the system is not memoryless.
+		\item
+			Let
+			\begin{align*}
+				x(t) &= 1
+			\end{align*}
+			Therefore,
+			\begin{align*}
+				y(t) &= \int\limits_{-\infty}^{t} \dif \tau\\
+				\therefore \lim\limits_{t \to \infty} y(t) &= \lim\limits_{t \to \infty} \int\limits_{-\infty}^{t} \dif \tau\\
+				&\to \infty
+			\end{align*}
+			Therefore, as the system is unstable for a bounded input, it is BIBO unstable.
+		\item
+			\begin{align*}
+				\dod{y(t)}{t} &= \dod{}{t} \int\limits_{-\infty}^{t} x(\tau) \dif \tau\\
+				&= x(t)
+			\end{align*}
+			Therefore, the system is invertible.
+	\end{enumerate}
+\end{solution}
+
 \section{LTI Systems}
 
 \begin{definition}[Kronecker delta function]
@@ -702,6 +767,9 @@ Therefore,
 	A signal $x$ is said to be a power signal if $P_{\infty}$ is finite and positive.
 \end{definition}
 
+\clearpage
+\part{Fourier Series}
+
 \section{Synthesis and Analysis}
 
 \subsection{Discrete Time Systems}
@@ -778,12 +846,14 @@ Therefore,
 	\begin{align*}
 		a_k &= \frac{1}{N} \sum\limits_{n = \langle N \rangle} x[n] e^{-j k \frac{2 \pi}{N} n}\\
 	\end{align*}
+	\label{thm:Analysis_formula_for_discrete_time_systems}
 \end{theorem}
 
 \begin{theorem}[Synthesis formula for discrete time systems]
 	\begin{align*}
 		x[n] &= \sum\limits_{k = \langle N \rangle} a_k e^{j k \frac{2 \pi}{N} n}
 	\end{align*}
+	\label{thm:Synthesis_formula_for_discrete_time_systems}
 \end{theorem}
 
 \begin{question}
@@ -888,12 +958,248 @@ Therefore,
 	\begin{align*}
 		a_k &= \frac{1}{T} \int\limits_{T} x(t) e^{-j k \Omega_0 t}
 	\end{align*}
+	\label{thm:Analysis_formula_for_continuous_time_systems}
 \end{theorem}
 
 \begin{theorem}[Synthesis formula for continuous time systems]
 	\begin{align*}
 		x(t) &= \sum\limits_{k = -\infty}^{\infty} a_k e^{j k \Omega_0 t}
 	\end{align*}
+	\label{thm:Synthesis_formula_for_continuous_time_systems}
 \end{theorem}
+
+\section{Periodic Square Waves}
+
+\begin{definition}[Normalized sinus cardinalis/$\sinc$ function]
+	\begin{align*}
+		\sinc(x) &=
+			\begin{cases}
+				1 &;\quad x = 0\\
+				\frac{\sin(\pi x)}{\pi x} &;\quad x\neq 0\\
+			\end{cases}
+	\end{align*}
+\end{definition}
+
+\begin{theorem}
+	\begin{align*}
+		\int\limits_{-\infty}^{\infty} \sinc(x) \dif x &= 1
+	\end{align*}
+\end{theorem}
+
+\begin{theorem}
+	\begin{align*}
+		\sinc(x) &< \frac{1}{|x|}
+	\end{align*}
+\end{theorem}
+
+\subsection{Continuous Time Signal}
+
+Consider a square wave, such that
+\begin{align*}
+	x(t) &= x(t + T)\\
+	x(t) &=
+		\begin{cases}
+			1 &;\quad |t| \le T_1\\
+			0 &;\quad T_1 < |t| \le \frac{T}{2}\\
+		\end{cases}
+\end{align*}
+Let
+\begin{align*}
+	\Omega_0 &= \frac{2 \pi}{T}
+\end{align*}
+Therefore, by \nameref{thm:Analysis_formula_for_continuous_time_systems}, the Fourier coefficients are
+\begin{align*}
+	a_0 &= \frac{1}{T} \int\limits_{T} x(t) \dif t\\
+	&= \frac{1}{T} \int\limits_{-T_1}^{T_1} \dif t\\
+	&= \frac{2 T_1}{T}
+\end{align*}
+For $k \neq 0$,
+\begin{align*}
+	a_k &= \frac{1}{T} \int\limits_{T} x(t) e^{-j k \Omega_0 t} \dif t\\
+	&= \frac{1}{T} \left. \frac{e^{-j k \Omega_0 t}}{-j k \Omega_0} \right|_{-T_1}^{T_1}\\
+	&= \frac{e^{j k \Omega_0 T_1} - e^{-j k \Omega_0 T_1}}{j k \Omega_0 T}\\
+	&= \frac{2}{k \Omega_0 T} \frac{e^{j k \Omega_0 T_1} - e^{-j k \Omega_0 T_1}}{2 j}\\
+	&= \frac{2 \sin(k \Omega_0 T_1)}{k \Omega_0 T}\\
+	&= \frac{\sin(k \Omega_0 T_1)}{k \pi}\\
+	&= \frac{2 \sin(k \Omega_0 T_1)}{k \Omega_0 T}\\
+	&= \frac{2 T_1}{T} \frac{\sin(k \Omega_0 T_1)}{k \Omega_0 T_1}
+\end{align*}
+Therefore, $\forall k \in \mathbb{Z}$,
+\begin{align*}
+	a_k &= \frac{2 T_1}{T} \sinc\left( \frac{k \Omega_0 T_1}{\pi} \right)\\
+	&= \frac{2 T_1}{T} \sinc\left( k \frac{2 T_1}{T} \right)
+\end{align*}
+
+\subsection{Discrete Time Signal}
+
+Consider a square wave, such that
+\begin{align*}
+	x[n] &= x[n + N]\\
+	x[n] &=
+		\begin{cases}
+			1 &;\quad |n| \le N_1\\
+			0 &;\quad N_1 < |n| \le \frac{N}{2}\\
+		\end{cases}
+\end{align*}
+Let
+\begin{align*}
+	\omega_0 &= \frac{2 \pi}{N}
+\end{align*}
+Therefore, by \nameref{thm:Analysis_formula_for_discrete_time_systems}, the Fourier coefficients are
+\begin{align*}
+	a_k &= \frac{1}{N} \sum\limits_{n = \langle N \rangle} x[n] e^{-j k \frac{2 \pi}{N} n}\\
+	&= \frac{1}{N} \sum\limits_{n = -N_1}^{N_1} e^{-j k \frac{2 \pi}{N} n}\\
+	&= \frac{1}{N} \sum\limits_{l = 0}^{2 N_1} e^{-j k \frac{2 \pi}{N} (l - N_1)}\\
+	&= \frac{e^{j k \frac{2 \pi}{N} N_1}}{N} \sum\limits_{l = 0}^{2 N_1} e^{-j k \frac{2 \pi}{N} l}\\
+	&= \frac{e^{j k \frac{2 \pi}{N} N_1}}{N} \frac{1 - e^{-j k \frac{2 \pi}{N} (2 N_1 + 1)}}{1 - e^{-j k \frac{2 \pi}{N}}}\\
+	&= \frac{e^{j k \frac{2 \pi}{N} N_1}}{N} \frac{e^{-j k \frac{2 \pi}{N} \frac{2 N_1 + 1}{2}}}{e^{-j k \frac{2 \pi}{2 N}}} \frac{e^{j k \frac{2 \pi}{N} \frac{2 N_1 + 1}{2}} - e^{-j k \frac{2 \pi}{N} \frac{2 N_1 + 1}{2}}}{e^{j k \frac{2 \pi}{2 N}} - e^{-j k \frac{2 \pi}{2 N}}}\\
+	&= \frac{1}{N} \frac{\sin\left( k \frac{2 \pi (2 N_1 + 1)}{2 N} \right)}{\sin\left( k \frac{2 \pi}{2 N} \right)}\\
+	&= \frac{1}{N} \frac{\sin\left( \frac{k \pi}{N} (2 N_1 + 1) \right)}{\sin\left( \frac{k \pi}{N} \right)}
+\end{align*}
+
+\section{Convergence of Fourier Series and Projection Theorem}
+
+\begin{theorem}[Best Approximation Theorem]
+	Let $\left\{ \varphi_k(t) \right\}$ be a set of orthonormal function over $[a,b)$, where $k \in \mathbb{W}$.\\
+	Let $x(t)$ be defined on $[a,b)$.\\
+	Let
+	\begin{align*}
+		\hat{x}_N(t) &= \sum\limits_{k = -N}^{N} a_k \varphi_k(t)
+	\end{align*}
+	be an approximation of $x(t)$.\\
+	Let
+	\begin{align*}
+		e_N(t) &= x(t) - \hat{x}_N(t)
+	\end{align*}
+	be the error in the approximation.\\
+	Let the energy corresponding to the error be
+	\begin{align*}
+		E_N &= \int\limits_{a}^{b} \left| e_N(t) \right|^2 \dif t
+	\end{align*}
+	Then, $E_N$ is minimized by the selection
+	\begin{align*}
+		a_k &= \left\langle x(t),{\varphi_k}(t) \right\rangle\\
+		&= \int\limits_{a}^{b} x(t) {\varphi_k}^*(t) \dif t
+	\end{align*}
+	Also, if $x \in L_2$,
+	\begin{align*}
+		\lim\limits_{N \to \infty} E_N &= 0
+	\end{align*}
+	\label{thm:Best_Approximation_Theorem}
+\end{theorem}
+
+\begin{theorem}[Dirichlet's Conditions]
+	If a signal $x(t)$ satisfies
+	\begin{enumerate}
+		\item $\displaystyle \int\limits_{T} \left| x(t) \right| \dif t < \infty$.
+		\item In every finite interval, $x(t)$ has a finite number of extrema.
+		\item In every finite interval, $x(t)$ has a finite number of discontinuities, each of which is finite.
+	\end{enumerate}
+	then,
+	\begin{align*}
+		\lim\limits_{N \to \infty} x_N(t) &= \frac{x(t^+) + x(t^-)}{2}
+	\end{align*}
+	\label{thm:Dirichlet's_Conditions}
+\end{theorem}
+
+\begin{theorem}
+	If $x(t)$ is periodic, with discontinuities, then, $\forall k > K$,
+	\begin{align*}
+		|a_k| &< \frac{c}{k}
+	\end{align*}
+	If the first $m$ derivatives of $x(t)$ are continuous,
+	\begin{align*}
+		|a_k| &< \frac{c}{k^{m + 2}}
+	\end{align*}
+\end{theorem}
+
+\begin{theorem}[Gibbs' Phenomenon]
+	For every point of continuity,
+	\begin{align*}
+		\lim\limits_{N \to \infty} x_N &= x(t)
+	\end{align*}
+	At every point of discontinuity,
+	\begin{align*}
+		\lim\limits_{N \to \infty} \left| x(t + \Delta t) - x_N(t + \Delta t) \right| &\approx 0.09 \Delta x
+	\end{align*}
+	where
+	\begin{align*}
+		\Delta t &= \frac{T}{2 N}
+	\end{align*}
+	\label{thm:Gibbs'_Phenomenon}
+\end{theorem}
+
+\section{Properties of Fourier Series}
+
+\subsection{Time Reversal}
+
+Consider a system
+\begin{align*}
+	y(t) &= x(-t)
+\end{align*}
+Let $x(t) \FS a_k$, i.e.,
+\begin{align*}
+	x(t) &= \sum\limits_{k = -\infty}^{\infty} a_k e^{j k \Omega_0 t}
+\end{align*}
+Therefore,
+\begin{align*}
+	y(t) &= x(-t)\\
+	&= \sum\limits_{k = -\infty}^{\infty} a_k e^{j k \Omega_0 (-t)}
+\end{align*}
+Let
+\begin{align*}
+	m &= -k
+\end{align*}
+Therefore,
+\begin{align*}
+	y(t) &= \sum\limits_{m = -\infty}^{\infty} a_{-m} e^{j m \Omega_0 t}
+\end{align*}
+Let
+\begin{align*}
+	b_m &= a_{-m}
+\end{align*}
+Therefore,
+\begin{align*}
+	y(t) &= \sum\limits_{m = -\infty}^{\infty} b_m e^{j m \Omega_0 t}
+\end{align*}
+Therefore, in general, if
+\begin{align*}
+	x(t) &\FS a_k
+\end{align*}
+then
+\begin{align*}
+	x(-t) &\FS a_{-k}
+\end{align*}
+Similarly, in general, if
+\begin{align*}
+	x[n] &\DFS a_k
+\end{align*}
+then
+\begin{align*}
+	x[-n] &\DFS a_{-k}
+\end{align*}
+
+\subsection{Scaling}
+
+Consider a system
+\begin{align*}
+	y(t) &= x(\alpha t)
+\end{align*}
+Let
+\begin{align*}
+	\tilde{\Omega}_0 &= \frac{2 \pi}{\tilde{T}}\\
+	&= \alpha \frac{2 \pi}{T}\\
+	&= \alpha \Omega_0
+\end{align*}
+Let
+\begin{align*}
+	\alpha \tilde{T} &= T
+\end{align*}
+Therefore,
+\begin{align*}
+	y(t) &= x(\alpha t)\\
+	&= \sum\limits_{k = -\infty}^{\infty} a_k e^{j k \frac{\tilde{\Omega}}{\tilde{\Omega}_0 \alpha} t}\\
+	&= \sum\limits_{k = -\infty}^{\infty} a_k e^{j k \tilde{\Omega}_0 t}
+\end{align*}
 
 \end{document}

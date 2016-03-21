@@ -59,6 +59,13 @@
 \newtheorem{theorem}{Theorem}
 \newtheorem{law}{Law}
 
+\newcommand{\circled}[1]{%
+	\begin{tikzpicture}[baseline={(char.base)}]
+		\node (char) {\tiny \sf #1};
+		\node[draw,circle, minimum size = 8pt, inner sep=0pt,overlay] (char.center){};
+	\end{tikzpicture}
+}
+
 \makeatletter
 \@addtoreset{section}{part} %resets section numbers in new part
 \makeatother
@@ -1200,6 +1207,400 @@ Therefore,
 	y(t) &= x(\alpha t)\\
 	&= \sum\limits_{k = -\infty}^{\infty} a_k e^{j k \frac{\tilde{\Omega}}{\tilde{\Omega}_0 \alpha} t}\\
 	&= \sum\limits_{k = -\infty}^{\infty} a_k e^{j k \tilde{\Omega}_0 t}
+\end{align*}
+
+\subsection{Multiplication}
+
+\begin{theorem}
+	Let
+	\begin{align*}
+		x(t) &\FS a_k\\
+		y(t) &\FS b_k
+	\end{align*}
+	be periodic with period $T$.\\
+	Let
+	\begin{align*}
+		\Omega_0 &= \frac{2 \pi}{T}
+	\end{align*}
+	Let
+	\begin{align*}
+		z(t) &= x(t) y(t)
+	\end{align*}
+	Then, $z(t)$ is periodic with period $T$, and
+	\begin{align*}
+		z(t) &\FS c_l
+	\end{align*}
+	where
+	\begin{align*}
+		c_l &= \sum\limits_{k = -\infty}^{\infty} a_k b_{l - k}
+	\end{align*}
+\end{theorem}
+
+\begin{proof}
+	\begin{align*}
+		z(t + T) &= x(t + T) y(t + T)\\
+		&= x(t) y(t)\\
+		&= z(t)
+	\end{align*}
+	Therefore, $z(t)$ is periodic with period $T$.\\
+	Therefore,
+	\begin{align*}
+		z(t) &= x(t) y(t)\\
+		&= \sum\limits_{k = -\infty}^{\infty} a_k e^{j k \Omega_0 t} \sum\limits_{m = -\infty}^{\infty} b_m e^{j m \Omega_0 t}\\
+		&= \sum\limits_{k = -\infty}^{\infty} a_k b_m e^{j (k + m) \Omega_0 t}
+	\end{align*}
+	Let
+	\begin{align*}
+		l &= k + m
+	\end{align*}
+	Therefore,
+	\begin{align*}
+		z(t) &= \sum\limits_{k = -\infty}^{\infty} \sum\limits_{l = -\infty}^{\infty} a_k b_{l - k} e^{j l \Omega_0 t}\\
+		&= \sum\limits_{l = -\infty}^{\infty} \left( \sum\limits_{k = -\infty}^{\infty} a_k b_{l - k} \right) e^{j l \Omega_0 t}
+	\end{align*}
+	Let
+	\begin{align*}
+		c_l &= \sum\limits_{k = -\infty}^{\infty} a_k b_{l - k}
+	\end{align*}
+	Therefore,
+	\begin{align*}
+		z(t) &= \sum\limits_{l = -\infty}^{\infty} c_l e^{j l \Omega_0 t}
+	\end{align*}
+\end{proof}
+
+\begin{theorem}
+	Let
+	\begin{align*}
+		x[n] &\DFS a_k\\
+		y[n] &\DFS b_k
+	\end{align*}
+	be periodic with period $N$.\\
+	Let
+	\begin{align*}
+		\omega_0 &= \frac{2 \pi}{N}
+	\end{align*}
+	Let
+	\begin{align*}
+		z[n] &= x[n] y[n]
+	\end{align*}
+	Then, $z[n]$ is periodic with period $N$, and
+	\begin{align*}
+		z[n] &\FS c_l
+	\end{align*}
+	where
+	\begin{align*}
+		c_l &= \sum\limits_{k = -\infty}^{\infty} a_k b_{l - k}
+	\end{align*}
+\end{theorem}
+
+\begin{proof}
+	\begin{align*}
+		z[n + N] &= x[n + N] y[n + N]\\
+		&= x[n] y[n]\\
+		&= z[n]
+	\end{align*}
+	Therefore, $z[n]$ is periodic with period $N$.\\
+	Therefore,
+	\begin{align*}
+		z[n] &= x[n] y[n]\\
+		&= \sum\limits_{k = \langle N \rangle} a_k e^{j k \omega_0 t} \sum\limits_{m = \langle N \rangle} b_m e^{j m \omega_0 t}\\
+		&= \sum\limits_{k = \langle N \rangle} a_k b_m e^{j (k + m) \omega_0 t}
+	\end{align*}
+	Let
+	\begin{align*}
+		l &= k + m
+	\end{align*}
+	Therefore,
+	\begin{align*}
+		z[n] &= \sum\limits_{k = \langle N \rangle} \sum\limits_{l = \langle N \rangle} a_k b_{l - k} e^{j l \omega_0 t}\\
+		&= \sum\limits_{l = \langle N \rangle} \left( \sum\limits_{k = \langle N \rangle} a_k b_{l - k} \right) e^{j l \omega_0 t}
+	\end{align*}
+	Let
+	\begin{align*}
+		c_l &= \sum\limits_{k = \langle N \rangle} a_k b_{l - k}
+	\end{align*}
+	Therefore,
+	\begin{align*}
+		z(t) &= \sum\limits_{l = \langle N \rangle} c_l e^{j l \omega_0 t}
+	\end{align*}
+\end{proof}
+
+\subsection{Convolution}
+
+\begin{theorem}
+	Let
+	\begin{align*}
+		x(t) &\FS a_k\\
+		y(t) &\FS b_k
+	\end{align*}
+	be periodic with period $T$.\\
+	Let
+	\begin{align*}
+		\Omega_0 &= \frac{2 \pi}{T}
+	\end{align*}
+	Let
+	\begin{align*}
+		z(t) &= x(t) \ast y(t)\\
+		&= \int\limits_{T} x(\tau) y(t - \tau) \dif \tau
+	\end{align*}
+	Then, $z(t)$ is periodic with period $T$, and
+	\begin{align*}
+		z(t) &\FS c_k
+	\end{align*}
+	where
+	\begin{align*}
+		c_k &= T a_k b_k
+	\end{align*}
+\end{theorem}
+
+\begin{proof}
+	By \nameref{thm:Analysis_formula_for_continuous_time_systems},
+	\begin{align*}
+		c_k &= \frac{1}{T} \int\limits_{T} z(t) e^{-j k \Omega_0 t} \dif t\\
+		&= \frac{1}{T} \int\limits_{T} \int\limits_{T} x(\tau) y(t - \tau) e^{-j k \Omega_0 t} \dif \tau \dif t
+	\end{align*}
+	Let
+	\begin{align*}
+		\tilde{t} &= t - \tau
+	\end{align*}
+	Therefore,
+	\begin{align*}
+		c_k &= \frac{1}{T} \int\limits_{T} \int\limits_{T} x(\tau) y\left( \tilde{t} \right) e^{-j k \Omega_0 \left( \tilde{t} + \tau \right)}\\
+		&= \frac{1}{T} \int\limits_{T} \int\limits_{T} x(\tau) e^{j k \Omega_0 \tau} y\left( \tilde{t} \right) e^{-j k \Omega_0 \tilde{t}} e^{-j k \Omega_0 \tilde{t}} \dif \tilde{t}\\
+		&= \frac{1}{T} \int\limits_{T} x(\tau) e^{-j k \Omega_0 \tau} \dif \tau \int\limits_{T} y\left( \tilde{t} \right) e^{-j k \Omega_0 \tilde{t}} \dif \tilde{t}\\
+		&= a_k (T b_k)\\
+		&= T a_k b_k
+	\end{align*}
+\end{proof}
+
+\begin{theorem}
+	Let
+	\begin{align*}
+		x[n] &\FS a_k\\
+		y[n] &\FS b_k
+	\end{align*}
+	be periodic with period $N$.\\
+	Let
+	\begin{align*}
+		\omega_0 &= \frac{2 \pi}{T}
+	\end{align*}
+	Let
+	\begin{align*}
+		z[n] &= x[n] \ast y[n]\\
+		&= \sum\limits_{l = \langle N \rangle} x[l] y[n - l]
+	\end{align*}
+	Then, $z[n]$ is periodic with period $N$, and
+	\begin{align*}
+		z[n] &\FS c_k
+	\end{align*}
+	where
+	\begin{align*}
+		c_k &= N a_k b_k
+	\end{align*}
+\end{theorem}
+
+\begin{proof}
+	By \nameref{thm:Analysis_formula_for_discrete_time_systems},
+	\begin{align*}
+		c_k &= \frac{1}{N} \sum\limits_{n = \langle N \rangle} z[n] e^{-j k \omega_0 n}\\
+		&= \frac{1}{N} \sum\limits_{n = \langle N \rangle} \sum\limits_{l = \langle N \rangle} x[l] y[n - l] e^{-j k \omega_0 n}
+	\end{align*}
+	Let
+	\begin{align*}
+		m &= n - l
+	\end{align*}
+	Therefore,
+	\begin{align*}
+		c_k &= \frac{1}{N} \sum\limits_{n = \langle N \rangle} \int\limits_{n = \langle N \rangle} x(l) e^{-j k \omega_0 l} y[m] e^{-j k \omega_0 m}\\
+		&= \frac{1}{N} \sum\limits_{n = \langle N \rangle} x[l] e^{-j k \omega_0 l} \sum\limits_{m = \langle N \rangle} y[m] e^{-j k \omega_0 m}\\
+		&= a_k (N b_k)\\
+		&= N a_k b_k
+	\end{align*}
+\end{proof}
+
+\section{Response of an LTI System to a Periodic Input}
+
+Consider a system with impulse response $h(t)$.\\
+Let $x(t)$ be an input to the system, where $x(t)$ is periodic with period $T$.\\
+Therefore, the output of the system is
+\begin{align*}
+	y(t) &= x(t) \ast h(t)\\
+	&= \int\limits_{-\infty}^{\infty} h(\tau) x(t - \tau) \dif \tau\\
+	&= \dots + \int\limits_{0}^{T} h(\tau) x(t - \tau) \dif \tau + \int\limits_{T}^{2 T} h(\tau) x(t - \tau) \dif \tau + \dots
+\end{align*}
+Let
+\begin{align*}
+	\theta_k &= \tau - k T
+\end{align*}
+Therefore,
+\begin{align*}
+	y(t) &=\quad \dots\\
+	&\quad + \int\limits_{0}^{T} h(\theta_0) x(t - \theta_0) \dif \theta_0\\
+	&\quad + \int\limits_{0}^{T} h(\theta_1 + T) x(t - \theta_1 - T) \dif \theta_1\\
+	&\quad + \int\limits_{0}^{T} h(\theta_2 + 2 T) x(t - \theta_2 - 2 T) \dif \theta_2\\
+	&\quad + \dots\\
+	&= \sum\limits_{k = -\infty}^{\infty} \int\limits_{0}^{T} h(\theta + k T) x(t - \theta - k T) \dif \theta\\
+	&= \sum\limits_{k = -\infty}^{\infty} \int\limits_{0}^{T} h(\theta + k T) x(t - \theta) \dif \theta\\
+	&= \int\limits_{0}^{T} \sum\limits_{k = -\infty}^{\infty} h(\theta + k T) x(t - \theta) \dif \theta
+\end{align*}
+Let
+\begin{align*}
+	h_{\text{per}} &= \sum\limits_{k = -\infty}^{\infty} h(t - k T)
+\end{align*}
+Therefore, $h_{\text{per}}$ is periodic with period $T$.\\
+Therefore,
+\begin{align*}
+	y(t) &= \int\limits_{0}^{T} h_{\text{per}}(\theta) x(t - \theta) \dif \theta\\
+	&= \int\limits_{T} h_{\text{per}}(\theta) x(t - \theta) \dif \theta\\
+	&= h_{\text{per}}(t) \circled{T} x(t)
+\end{align*}
+where $\circled{T}$ represents periodic convolution.
+
+\section{Parseval's Theorem}
+
+\begin{theorem}[Parseval's Theorem for Continuous Time]
+	Let
+	\begin{align*}
+		x(t) &\FS a_k\\
+		y(t) &\FS b_k
+	\end{align*}
+	Then,
+	\begin{align*}
+		\left\langle x(t),y(t) \right\rangle &= T \sum\limits_{k = -\infty}^{\infty} a_k {b_k}^*
+	\end{align*}
+	\label{thm:Parseval's_Theorem_for_Continuous_Time}
+\end{theorem}
+
+\begin{proof}
+	\begin{align*}
+		\left\langle x(t),y(t) \right\rangle &= \left\langle \sum\limits_{k = -\infty}^{\infty} a_k e^{j k \Omega_0 t} , \sum\limits_{l = -\infty}^{\infty} b_l e^{j l \Omega_0 t} \right\rangle\\
+		&= \sum\limits_{k = -\infty}^{\infty} \sum\limits_{l = -\infty}^{\infty} a_k {b_l}^* \left\langle e^{j k \Omega_0 t} , e^{j l \Omega_0 t} \right\rangle\\
+		&= \sum\limits_{k = -\infty}^{\infty} \sum\limits_{l = -\infty}^{\infty} a_k {b_l}^* T \delta[k - l]\\
+		&= T \sum\limits_{k = -\infty}^{\infty} a_k {b_k}^*
+	\end{align*}
+\end{proof}
+
+\begin{theorem}[Parseval's Theorem for Continuous Time]
+	Let
+	\begin{align*}
+		x[n] &\DFS a_k\\
+		y[n] &\DFS b_k
+	\end{align*}
+	Then,
+	\begin{align*}
+		\left\langle x[n],y[n] \right\rangle &= N \sum\limits_{k = \langle N \rangle} a_k {b_k}^*
+	\end{align*}
+	\label{thm:Parseval's_Theorem_for_Discrete_Time}
+\end{theorem}
+
+\begin{theorem}
+	\begin{align*}
+		\langle P \rangle &= \frac{1}{T} \int\limits_{-T}^{T} \left| x(t) \right|^2 \dif t\\
+		\sum\limits_{k = -\infty}^{\infty} |a_k|^2
+	\end{align*}
+\end{theorem}
+
+\begin{theorem}
+	\begin{align*}
+		\langle P \rangle &= \frac{1}{N} \sum\limits_{n = \langle N \rangle}\\
+		\sum\limits_{k = \langle N \rangle} |a_k|^2
+	\end{align*}
+\end{theorem}
+
+\section{Impulse Train}
+
+Consider
+\begin{align*}
+	x(t) &= \sum\limits_{l = -\infty}^{\infty} \delta(t - l T)
+\end{align*}
+Therefore, by \nameref{thm:Analysis_formula_for_continuous_time_systems},
+\begin{align*}
+	a_k &= \frac{1}{T} \int\limits_{T} x(t) e^{-j k \Omega_0 t} \dif t\\
+	&= \frac{1}{T} \int\limits_{-\frac{T}{2}}^{\frac{T}{2}} \sum\limits_{l = -\infty}^{\infty} \delta(t - l T) e^{-j k \Omega_0 t} \dif t\\
+	&= \frac{1}{T} \int\limits_{-\frac{T}{2}}^{\frac{T}{2}} \delta(t) e^{-j k \Omega_0 t} \dif t\\
+	&= \frac{1}{T} \left. e^{-j k \Omega_0 t} \right|_{-\frac{T}{2}}^{\frac{T}{2}}\\
+	&= \frac{1}{T}
+\end{align*}
+Therefore,
+\begin{align*}
+	x(t) &= \sum\limits_{k = -\infty}^{\infty} a_k e^{j k \Omega_0 t}\\
+	\therefore \sum\limits_{l = -\infty}^{\infty} \delta(t - l T) &= \frac{1}{T} \sum\limits_{k = -\infty}^{\infty} e^{j k \Omega_0 t}
+\end{align*}
+Therefore, if $t$ is an integral multiple of $T$, the infinite sum of the complex exponentials is infinite.
+If $t$ is not an integral multiple of $T$, the summands of the infinite sum cancel each other out.
+
+\clearpage
+\part{Fourier Transform}
+
+\section{Continuous Time Fourier Transform}
+
+Let $\tilde{x}(t)$ be the periodic extension of $x(t)$ with period $T$.\\
+Therefore,
+\begin{align*}
+	\tilde{x}(t) &= \sum\limits_{k = -\infty}^{\infty} a_k e^{j k \Omega_0 t}
+\end{align*}
+Therefore,
+\begin{align*}
+	a_k &= \frac{1}{T} \int\limits_{T} \tilde{x}(t) e^{-j k \Omega_0 t} \dif t\\
+	&= \frac{1}{T} \int\limits_{-\frac{T}{2}}^{\frac{T}{2}} \tilde{x}(t) e^{-j k \Omega_0 t} \dif t\\
+	&= \frac{1}{T} \int\limits_{-T_1}^{T_1} \tilde{x}(t) e^{-j k \Omega_0 t} \dif t\\
+	&= \frac{1}{T} \int\limits_{-T_1}^{T_1} x(t) e^{-j k \Omega_0 t} \dif t\\
+	&= \frac{1}{T} \int\limits_{-\infty}^{\infty} x(t) e^{-j k \Omega_0 t} \dif t\\
+	&= \frac{1}{T} \int\limits_{-\infty}^{\infty} x(t) e^{-j \Omega t} \dif t
+\end{align*}
+Let
+\begin{align*}
+	X(j \Omega) &= \int\limits_{-\infty}^{\infty} x(t) e^{-j \Omega t} \dif t
+\end{align*}
+Therefore,
+\begin{align*}
+	a_k &= \frac{1}{T} X(j \Omega)
+\end{align*}
+Therefore,
+\begin{align*}
+	\tilde{x}(t) &= \sum\limits_{k = -\infty}^{\infty} a_k e^{j k \Omega_0 t}\\
+	&= \sum\limits_{k = -\infty}^{\infty} \frac{1}{T} X(j k \Omega_0) e^{j k \Omega_0 t}\\
+	&= \sum\limits_{k = -\infty}^{\infty} \frac{\Omega_0}{2 \pi} X(j k \Omega_0) e^{j k \Omega_0 t}\\
+	&= \frac{1}{2 \pi} \sum\limits_{k = -\infty}^{\infty} X(j k \Omega_0) e^{j k \Omega_0 t}
+\end{align*}
+Therefore, as $\Omega_0 \to 0$,
+\begin{align*}
+	\lim\limits_{\Omega_0 \to 0} \tilde{x}(t) &= \frac{1}{2 \pi} \int\limits_{-\infty}^{\infty} X(j \Omega) e^{j \Omega t} \dif \Omega\\
+	\therefore \lim\limits_{T \to \infty} \tilde{x}(t) &= \frac{1}{2 \pi} \int\limits_{-\infty}^{\infty} X(j \Omega) e^{j \Omega t} \dif \Omega\\
+	\therefore x(t) &= \frac{1}{2 \pi} \int\limits_{-\infty}^{\infty} X(j \Omega) e^{j \Omega t} \dif \Omega
+\end{align*}
+
+\begin{definition}[Fourier transform]
+	The Fourier transformation of $x(t)$ is defined to be
+	\begin{align*}
+		X(j \Omega) &= \int\limits_{-\infty}^{\infty} x(t) e^{-j \Omega t} \dif t
+	\end{align*}
+	It is a particular case of the Laplace transform, for $s = j \Omega$.
+\end{definition}
+
+In general, if the Fourier transform of a non-periodic function is sampled, and these samples are used as Fourier coefficients to construct a signal, this signal is the periodic extension of the original signal.
+
+\section{Discrete Time Fourier Transform}
+
+Let $\tilde{x}[n]$ be the periodic extension of $x[n]$ with period $N$.\\
+Therefore,
+\begin{align*}
+	\tilde{x}[n] &= \sum\limits_{k = \langle N \rangle} a_k e^{j k \frac{2 \pi}{N} n}
+\end{align*}
+Therefore,
+\begin{align*}
+	a_k &= \frac{1}{N} \sum\limits_{n = \langle N \rangle} \tilde{x}[n] e^{-j k \frac{2 \pi}{N} n}\\
+	&= \frac{1}{N} \sum\limits_{n = -N_1}^{N_2} \tilde{x}[n] e^{-j k \frac{2 \pi}{N} n}\\
+	&= \frac{1}{N} \sum\limits_{n = -\infty}^{\infty} x[n] e^{-j k \frac{2 \pi}{N} n}\\
+	&= \frac{1}{N} \sum\limits_{n = -\infty}^{\infty} x[n] e^{-j \omega n}
+\end{align*}
+Let
+\begin{align*}
+	X\left( e^{j \omega} \right) &= \sum\limits_{n = -\infty}^{\infty} x[n] e^{-j \omega n}
+\end{align*}
+Therefore,
+\begin{align*}
+	a_k &= \frac{1}{N} X\left( e^{j \omega} \right)
 \end{align*}
 
 \end{document}

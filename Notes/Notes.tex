@@ -1570,7 +1570,7 @@ Therefore, as $\Omega_0 \to 0$,
 	\therefore x(t) &= \frac{1}{2 \pi} \int\limits_{-\infty}^{\infty} X(j \Omega) e^{j \Omega t} \dif \Omega
 \end{align*}
 
-\begin{definition}[Fourier transform]
+\begin{definition}[Continuous Time Fourier transform]
 	The Fourier transformation of $x(t)$ is defined to be
 	\begin{align*}
 		X(j \Omega) &= \int\limits_{-\infty}^{\infty} x(t) e^{-j \Omega t} \dif t
@@ -1579,6 +1579,68 @@ Therefore, as $\Omega_0 \to 0$,
 \end{definition}
 
 In general, if the Fourier transform of a non-periodic function is sampled, and these samples are used as Fourier coefficients to construct a signal, this signal is the periodic extension of the original signal.
+
+\begin{figure}[h]
+	\centering
+	\begin{tikzpicture}[node distance = 20em, auto]
+		\tikzstyle{block} = [rectangle, draw, text width=10em, text centered, rounded corners, minimum height=4em]
+		\tikzstyle{line} = [draw]
+		
+		\node [block] (time_signal) {$h(t)$};
+		\node [block, right of = time_signal] (freq_signal) {$H(j \Omega) = \displaystyle \int\limits_{-\infty}^{\infty} h(t) e^{-j \Omega t} \dif t$};
+		\node [block, below of = freq_signal] (Fourier_coefficients) {$a_k = \frac{1}{T} H(j \Omega)$};
+		\node [block, left of = Fourier_coefficients] (periodic_extension) {$h_{\text{per}}(t)$};
+
+		\path [line, stealth-stealth] (time_signal) -- (freq_signal) node [midway, above] {$\mathcal{FT}$};
+		\path [line, -stealth] (freq_signal) -- (Fourier_coefficients) node [midway, right] {sampling in frequency};
+		\path [line, stealth-stealth] (Fourier_coefficients) -- (periodic_extension) node [midway, below] {$\mathrm{FS}$};
+		\path [line, -stealth] (time_signal) -- (periodic_extension) node [midway, left] {folding};
+	\end{tikzpicture}
+	\caption{Relations Between Time Domain and Frequency Domain Representations of Continuous Time Signal}
+	\label{fig:Relations_Between_Time_Domain_and_Frequency_Domain_Representations_of_Continuous_Time_Signal}
+\end{figure}
+
+\begin{theorem}
+	The continuous time Fourier transform of a signal converges if and only if it satisfies \nameref{thm:Dirichlet's_Conditions}.
+\end{theorem}
+
+\begin{question}
+	Find the Fourier transform of
+	\begin{align*}
+		x(t) &= e^{-a t} u(t)\\
+	\end{align*}
+	where $\Re\{a\} > 0$.
+\end{question}
+
+\begin{solution}
+	\begin{align*}
+		X(j \Omega) &= \int\limits_{-\infty}^{\infty} x(t) e^{-j \Omega t} \dif t\\
+		&= \int\limits_{-\infty}^{\infty} e^{-a t} u(t) e^{-j \Omega t} \dif t\\
+		&= \int\limits_{0}^{\infty} e^{-a t} e^{-j \Omega t} \dif t\\
+		&= \int\limits_{0}^{\infty} e^{-(a + j \Omega) t} \dif t\\
+		&= -\frac{1}{a + j \Omega} \left. e^{-(a + j \Omega) t} \right|_{0}^{\infty}\\
+		&= \frac{1}{a + j \Omega}
+	\end{align*}
+\end{solution}
+
+\begin{theorem}
+	The Fourier transform of
+	\begin{align*}
+		x(t) &= \delta(t)
+	\end{align*}
+	is
+	\begin{align*}
+		X(j \Omega) &= 1
+	\end{align*}
+\end{theorem}
+
+\begin{proof}
+	\begin{align*}
+		X(j \Omega) &= \int\limits_{-\infty}^{\infty} x(t) e^{-j \Omega t} \dif t\\
+		&= \int\limits_{-\infty}^{\infty} \delta(t) e^{-j \Omega t} \dif t\\
+		&= 1
+	\end{align*}
+\end{proof}
 
 \section{Discrete Time Fourier Transform}
 
@@ -1602,5 +1664,194 @@ Therefore,
 \begin{align*}
 	a_k &= \frac{1}{N} X\left( e^{j \omega} \right)
 \end{align*}
+Therefore,
+\begin{align*}
+	\tilde{x}[n] &= \sum\limits_{k = \langle N \rangle} a_k e^{j k \frac{2 \pi}{N} n}\\
+	&= \frac{1}{N} \sum\limits_{k = \langle N \rangle} X\left( e^{j k \frac{2 \pi}{N}} \right) e^{j k \frac{2 \pi}{N} n}\\
+	&= \frac{1}{N} \sum\limits_{k = \langle N \rangle} X\left( e^{j k \omega_0} \right) e^{j k \omega_0 n}\\
+	&= \frac{1}{2 \pi} \sum\limits_{k = \langle N \rangle} X\left( e^{j k \omega_0} \right) e^{j k \omega_0 n} \omega_0
+\end{align*}
+Therefore, as $\omega_0 \to 0$,
+\begin{align*}
+	\lim\limits_{\omega_0 \to 0} \tilde{x}[n] &= \frac{1}{2 \pi} \int\limits_{2 \pi} X\left( e^{j \omega} \right) e^{j \omega n} \dif \omega\\
+	\therefore \lim\limits_{N \to \infty} \tilde{x}[n] &= \frac{1}{2 \pi} \int\limits_{2 \pi} X\left( e^{j \omega} \right) e^{j \omega n} \dif \omega\\
+	\therefore x[n] &= \frac{1}{2 \pi} \int\limits_{2 \pi} X\left( e^{j \omega} \right) e^{j \omega n} \dif \omega\\
+\end{align*}
+
+\begin{definition}[Discrete Time Fourier transform]
+	The Fourier transformation of $x[n]$ is defined to be
+	\begin{align*}
+		X\left( e^{j \omega} \right) &= \sum\limits_{n = -\infty}^{\infty} x[n] e^{-j \omega t}
+	\end{align*}
+	It is a particular case of the Laplace transform, for $s = j \Omega$.
+\end{definition}
+
+\begin{theorem}
+	The discrete time Fourier transform of a signal $x[n]$ converges if and only
+	\begin{align*}
+		\sum \left| x[n] \right| &< \infty
+	\end{align*}
+\end{theorem}
+
+\begin{question}
+	Find the Fourier transform of
+	\begin{align*}
+		x[n] &= a^n u[n]
+	\end{align*}
+	where $a \in \mathbb{R}$ and $|a| < 1$.
+\end{question}
+
+\begin{solution}
+	\begin{align*}
+		X\left( e^{j \omega} \right) &= \sum\limits_{n = -\infty}^{\infty} x[n] e^{-j \omega n}\\
+		&= \sum\limits_{n = -\infty}^{\infty} a^n u[n] e^{-j \omega n}\\
+		&= \sum\limits_{n = 0}^{\infty} a^n e^{-j \omega n}\\
+		&= \sum\limits_{n = 0}^{\infty} \left( a e^{-j \omega} \right)^n\\
+		&= \frac{1}{1 - a e^{-j \omega}}
+	\end{align*}
+\end{solution}
+
+\begin{theorem}
+	The Fourier transform of
+	\begin{align*}
+		x[n] &= \delta[n]
+	\end{align*}
+	is
+	\begin{align*}
+		X\left( e^{j \omega} \right) &= 1
+	\end{align*}
+\end{theorem}
+
+\begin{proof}
+	\begin{align*}
+		X\left( e^{j \omega} \right) &= \sum\limits_{n = -\infty}^{\infty} x[n] e^{-j \omega n}\\
+		&= \sum\limits_{n = -\infty}^{\infty} \delta[n] e^{-j \omega n}\\
+		&= 1
+	\end{align*}
+\end{proof}
+
+\begin{figure}[h]
+	\centering
+	\begin{tikzpicture}[node distance = 20em, auto]
+		\tikzstyle{block} = [rectangle, draw, text width=10em, text centered, rounded corners, minimum height=4em]
+		\tikzstyle{line} = [draw]
+		
+		\node [block] (time_signal) {$h[n]$};
+		\node [block, right of = time_signal] (freq_signal) {$H\left( e^{j \omega} \right) = \sum\limits_{n = -\infty}^{\infty} h[n] e^{-j \omega n}$};
+		\node [block, below of = freq_signal] (Fourier_coefficients) {$a_k = \frac{1}{N} H\left( e^{j \omega} \right)$};
+		\node [block, left of = Fourier_coefficients] (periodic_extension) {$h_{\text{per}}[n] = \sum\limits_{k = -\infty}^{\infty} h(n - k N)$};
+
+		\path [line, stealth-stealth] (time_signal) -- (freq_signal) node [midway, above] {$\mathcal{DTFT}$};
+		\path [line, -stealth] (freq_signal) -- (Fourier_coefficients) node [midway, right] {sampling in frequency};
+		\path [line, stealth-stealth] (Fourier_coefficients) -- (periodic_extension) node [midway, below] {$\mathrm{DFS}$};
+		\path [line, -stealth] (time_signal) -- (periodic_extension) node [midway, left] {folding};
+	\end{tikzpicture}
+	\caption{Relations Between Time Domain and Frequency Domain Representations of Discrete Time Signal}
+	\label{fig:Relations_Between_Time_Domain_and_Frequency_Domain_Representations_of_Discrete_Time_Signal}
+\end{figure}
+
+\section{Continuous Time Fourier Transform for Periodic Signals}
+
+\begin{theorem}
+	\begin{align*}
+		\mathcal{FT}\left\{ e^{j \Omega_0 t} \right\} &= 2 \pi \delta(\Omega - \Omega_0)
+	\end{align*}
+\end{theorem}
+
+\begin{proof}
+	Let
+	\begin{align*}
+		X(j \Omega) &= 2 \pi \delta(\Omega - \Omega_0)
+	\end{align*}
+	Therefore,
+	\begin{align*}
+		x(t) &= \frac{1}{2 \pi} \int\limits_{-\infty}^{\infty} X(j \Omega) e^{j \Omega t} \dif \Omega\\
+		&= \frac{1}{2 \pi} \int\limits_{-\infty}^{\infty} 2 \pi \delta(\Omega - \Omega_0) e^{j \Omega t} \dif t\\
+		&= e^{j \Omega_0 t}
+	\end{align*}
+\end{proof}
+
+\begin{theorem}
+	\begin{align*}
+		\mathcal{FT}\left\{ \sum\limits_{k = -\infty}^{\infty} a_k e^{j k \Omega_0 t} \right\} &= \sum\limits_{k = -\infty}^{\infty} 2 \pi a_k \delta(\Omega - \Omega_0)
+	\end{align*}
+\end{theorem}
+
+\begin{proof}
+	Let
+	\begin{align*}
+		x(t) &= \sum\limits_{k = -\infty}^{\infty} a_k e^{j k \Omega_0 t}\\
+	\end{align*}
+	Therefore,
+	\begin{align*}
+		\mathcal{FT}\left\{ x(t) \right\} &= \mathcal{FT}\left\{ \sum\limits_{k = -\infty}^{\infty} a_k e^{j k \Omega_0 t} \right\}\\
+		&= \sum\limits_{k = -\infty}^{\infty} a_k \mathcal{FT}\left\{ e^{j k \Omega_0 t} \right\}\\
+		&= \sum\limits_{k = -\infty}^{\infty} 2 \pi a_k \delta(\Omega - \Omega_0)
+	\end{align*}
+\end{proof}
+
+\section{Continuous Time Fourier Transform for Periodic Signals}
+
+\begin{theorem}
+	\begin{align*}
+		\mathcal{DTFT}\left\{ e^{j \omega_0 n} \right\} &= 2 \pi \delta[\omega - \omega_0 - 2 \pi l]
+	\end{align*}
+\end{theorem}
+
+\begin{theorem}
+	\begin{align*}
+		\mathcal{DTFT}\left\{ \sum\limits_{k = \langle N \rangle} a_k e^{j k \frac{2 \pi}{N} n} \right\} &= \sum\limits_{r = -\infty}^{\infty} 2 \pi a_r \delta\left( \omega - r \frac{2 \pi}{N} \right)
+	\end{align*}
+\end{theorem}
+
+\section{Properties of Fourier Transform}
+
+\subsection{Convolution}
+
+\begin{theorem}
+	Let
+	\begin{align*}
+		y(t) &= x(t) \ast h(t)
+	\end{align*}
+	Then,
+	\begin{align*}
+		Y(j \Omega) &= X(j \Omega) H(j \Omega)
+	\end{align*}
+\end{theorem}
+
+\begin{proof}
+	\begin{align*}
+		y(t) &= x(t) \ast h(t)\\
+		&= \int\limits_{-\infty}^{\infty} x(\tau) h(t - \tau) \dif t
+	\end{align*}
+	Therefore,
+	\begin{align*}
+		Y(j \Omega) = \int\limits_{-\infty}^{\infty} y(t) e^{-j \Omega t} \dif t\\
+		&= \int\limits_{-\infty}^{\infty} x(\tau) h(t - \tau) \dif \tau e^{-j \Omega t} \dif t
+	\end{align*}
+	Let
+	\begin{align*}
+		\tilde{t} &= t - \tau
+	\end{align*}
+	Therefore,
+	\begin{align*}
+		Y(j \Omega) &= \int\limits_{-\infty}^{\infty} \int\limits_{-\infty}^{\infty} x(\tau) h\left( \tilde{t} \right) \dif \tau e^{-j \Omega \left( \tilde{t} + \tau \right)} \dif \tilde{t}\\
+		&= \int\limits_{-\infty}^{\infty} \int\limits_{-\infty}^{\infty} x(\tau) e^{-j \Omega \tau} h\left( \tilde{t} \right) e^{-j \Omega \tilde{t}} \dif \tau \dif \tilde{t}\\
+		&= \int\limits_{-\infty}^{\infty} \int\limits_{-\infty}^{\infty} x(\tau) e^{-j \Omega \tau} \dif \tau h\left( \tilde{t} \right) e^{-j \Omega \tilde{t}} \dif \tilde{t}\\
+		&= \int\limits_{-\infty}^{\infty} x(\tau) e^{-j \Omega \tau} \dif \tau \int\limits_{-\infty}^{\infty} h\left( \tilde{t} \right) e^{-j \Omega \tilde{t}} \dif \tilde{t}\\
+		&= X(j \Omega) H(j \Omega)
+	\end{align*}
+\end{proof}
+
+\begin{theorem}
+	Let
+	\begin{align*}
+		y[n] &= x[n] \ast h[n]
+	\end{align*}
+	Then,
+	\begin{align*}
+		Y\left( e^{j \omega} \right) &= X\left( e^{j \omega} \right) H\left( e^{j \omega} \right)
+	\end{align*}
+\end{theorem}
 
 \end{document}
